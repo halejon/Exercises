@@ -99,7 +99,7 @@ def display_hand(hand):
     for letter in hand.keys():
         for j in range(hand[letter]):
              print letter,              # print all on the same line
-    print                               # print an empty line
+    print "\n"                               # print an empty line
 
 #
 # Make sure you understand how this function works and what it does!
@@ -150,9 +150,11 @@ def update_hand(hand, word):
     """
     frequency = get_frequency_dict(word)
 
+    for letter in frequency:
+        hand[letter] -= frequency[letter]
     #Is this too convoluted?
-    return {letter : hand[letter] - frequency.get(letter,0) for letter in hand.keys() if hand[letter] - frequency.get(letter,0) > 0}
-
+    # return {letter : hand[letter] - frequency.get(letter,0) for letter in hand.keys() if hand[letter] - frequency.get(letter,0) > 0}
+    return hand
 
 #
 # Problem #3: Test word validity
@@ -173,13 +175,13 @@ def is_valid_word(word, hand, word_list):
     letter_counter = hand.copy()
 
     #is it possible to do this in a comprehension? I think since I am mutating the counter probably not?
-    for letter in list(word):
+    for letter in word:
         letter_counter[letter] = letter_counter.get(letter,0) - 1
 
     if min(letter_counter.values())<0:
         return False
-    else:
-        return word in word_list
+
+    return word in word_list
 
 
 def calculate_handlen(hand):
@@ -229,8 +231,6 @@ def play_hand(hand, word_list):
         word = raw_input('Enter word, or a "." to indicate you are finished: ')
         if word == '.':
             break
-        else:
-            pass
 
         if is_valid_word(word, hand, word_list):
             #score word, update score, display score, update hand return to the top of the loop
@@ -239,7 +239,6 @@ def play_hand(hand, word_list):
             print '"%s" earned %d points. Total: %d points' %(word, word_score, total_score)
             hand = update_hand(hand, word)
             print ""
-            continue
         else:
             print "Invalid word, please try again."
             print ""
@@ -285,6 +284,3 @@ def play_game(word_list):
 if __name__ == '__main__':
     word_list = load_words()
     play_game(word_list)
-
-
-play_game(word_list)
